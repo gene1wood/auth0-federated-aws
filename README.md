@@ -104,46 +104,54 @@ From this point you should be able to log into AWS using federated login
 
 ## Setup Command Line Access
 
-This is a work in progress. There are two general approaches to this.
+This is a work in progress. There are three general approaches to this.
 
-1. The method [recommended by AWS](https://aws.amazon.com/blogs/security/how-to-implement-a-general-solution-for-federated-apicli-access-using-saml-2-0/)
+### Option 1 : Scrape HTML Form and Auth on the Command Line
+
+The method [recommended by AWS](https://aws.amazon.com/blogs/security/how-to-implement-a-general-solution-for-federated-apicli-access-using-saml-2-0/)
   which involves the user passing their username, password and MFA token
   through an interactive command line interface which then does web page
   scraping and parsing to simulate a browser interaction with Auth0. To
   accomplish this we'd need to
-    * Establish a non-javascript based Auth0 lock login interface. This could
-      be done by writing a serverless (API Gateway + Lambda) Flask app the
-      does what auth0.js or the Auth0 hosted Lock do.
-    * Extend `samlapi_formauth.py` to interact with this new non-javascript
-      based Auth0 login interface
-    * Accept the poor experience of users having to copy paste their LDAP
-      password from their password manager onto the command line
-2. A method that I've not come up with based on 
+
+* Establish a non-javascript based Auth0 lock login interface. This could
+  be done by writing a serverless (API Gateway + Lambda) Flask app the
+  does what auth0.js or the Auth0 hosted Lock do.
+* Extend `samlapi_formauth.py` to interact with this new non-javascript
+  based Auth0 login interface
+* Accept the poor experience of users having to copy paste their LDAP
+  password from their password manager onto the command line
+
+### Option 2 : Web login and pass API keys to the filesystem
+A method that I've not come up with based on 
   [Auth0's recommended method](https://auth0.com/docs/integrations/aws#obtain-aws-tokens-to-securely-call-aws-apis-and-resources)
   that involves the user logging into a web based relying party, obtaining
   AWS API keys from AWS STS over the web, and then conveying these credentials
   from the web context into the filesystem so it's available to awscli and
   boto (this step is what I haven't solved)
-3. A method that we've envisioned where
-    * A user runs a script on the command line that
-      * generates an ephemeral symmetric key
-      * launches a browser tab to a web based relying party, POSTing the
-        symmetric key to the RP over HTTPS
-    * In the browser the RP persists the symmetric key into the users session
-      and sends them off to Auth0 to authenticate
-    * The user returns from Auth0 to the RP and the RP uses
-      [Auth0's AWS addon for identity delegation](https://auth0.com/docs/integrations/aws#obtain-aws-tokens-to-securely-call-aws-apis-and-resources)
-      to obtain AWS STS credentials
-    * The RP then encrypts those credentials with the symmetric key provided
-      at the beginning from the command line tool and publishes them to a
-      publicly readable queue
-    * Earlier when the command line tool launched the browser tab, immediately
-      after it began polling the queue, looking for messages that decrypt
-      successfully with it's ephemeral symmetric key
-    * Once the symmetrically encrypted message shows up on the queue the 
-      command line tool fetches it, deletes it from the queue, decrypts it
-      and inserts the decrypted AWS STS credentials into the 
-      ~/.aws/credentials filestore
+
+### Option 3 : Web login and push API keys to a queue
+A method that we've envisioned where
+
+* A user runs a script on the command line that
+  * generates an ephemeral symmetric key
+  * launches a browser tab to a web based relying party, POSTing the
+    symmetric key to the RP over HTTPS
+* In the browser the RP persists the symmetric key into the users session
+  and sends them off to Auth0 to authenticate
+* The user returns from Auth0 to the RP and the RP uses
+  [Auth0's AWS addon for identity delegation](https://auth0.com/docs/integrations/aws#obtain-aws-tokens-to-securely-call-aws-apis-and-resources)
+  to obtain AWS STS credentials
+* The RP then encrypts those credentials with the symmetric key provided
+  at the beginning from the command line tool and publishes them to a
+  publicly readable queue
+* Earlier when the command line tool launched the browser tab, immediately
+  after it began polling the queue, looking for messages that decrypt
+  successfully with it's ephemeral symmetric key
+* Once the symmetrically encrypted message shows up on the queue the 
+  command line tool fetches it, deletes it from the queue, decrypts it
+  and inserts the decrypted AWS STS credentials into the 
+  ~/.aws/credentials filestore
 
 # Sources
 * https://auth0.com/docs/integrations/aws
