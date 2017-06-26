@@ -1,0 +1,74 @@
+{
+  "AWSTemplateFormatVersion":"2010-09-09",
+  "Description":"IAM Roles for Auth0 Federated Access",
+  "Parameters":{
+    "IdentityProviderArn":{
+      "Type":"String",
+      "Default":"arn:aws:iam::656532927350:saml-provider/Mozilla-Auth0-Dev",
+      "AllowedValues":[
+        "arn:aws:iam::656532927350:saml-provider/Mozilla-Auth0-Dev",
+        "prod arn goes here"
+      ],
+      "Description":"The ARN of the Auth0 SAML provider."
+    }
+  },
+  "Resources":{
+    "ReadOnlyIAMRole":{
+      "Type":"AWS::IAM::Role",
+      "Properties":{
+        "RoleName": "ReadOnlyFederated",
+        "AssumeRolePolicyDocument":{
+          "Version":"2012-10-17",
+          "Statement":[
+            {
+              "Action":"sts:AssumeRoleWithSAML",
+              "Effect":"Allow",
+              "Condition":{
+                "StringEquals":{
+                  "SAML:aud":"https://signin.aws.amazon.com/saml"
+                }
+              },
+              "Principal":{
+                "Federated":{
+                  "Ref":"IdentityProviderArn"
+                }
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns":[
+          "arn:aws:iam::aws:policy/ReadOnlyAccess"
+        ]
+      }
+    },
+    "AdminIAMRole":{
+      "Type":"AWS::IAM::Role",
+      "Properties":{
+        "RoleName": "AdminFederated",
+        "AssumeRolePolicyDocument":{
+          "Version":"2012-10-17",
+          "Statement":[
+            {
+              "Action":"sts:AssumeRoleWithSAML",
+              "Effect":"Allow",
+              "Condition":{
+                "StringEquals":{
+                  "SAML:aud":"https://signin.aws.amazon.com/saml"
+                }
+              },
+              "Principal":{
+                "Federated":{
+                  "Ref":"IdentityProviderArn"
+                }
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns":[
+          "arn:aws:iam::aws:policy/AdministratorAccess"
+        ]
+      }
+    }
+
+  }
+}
