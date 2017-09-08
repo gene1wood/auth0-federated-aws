@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>aws api sts key fetcher</title>
+    <script src="//cdn.auth0.com/w2/auth0-7.6.1.min.js"></script>
+    <script src="//cdn.auth0.com/js/lock/10.5.0/lock.min.js"></script>
+    <script type="text/javascript">
+        var clientId = "g34TCGI95PfOHugnurKY15sW0tCGOfjW";
+        var domain = "auth-dev.mozilla.auth0.com";
+        var options = {
+            assetsUrl: "https://rta-dev.mozilla.auth0.com",
+            clientBaseUrl: "https://rta-dev.mozilla.auth0.com"
+        };
+        var lock = new Auth0Lock(clientId, domain, options);
+        lock.show();
+
+        var auth0 = new Auth0({
+            clientID: clientId,
+            domain: domain,
+            callbackURL: 'https://localhost/a/index.html'
+        });
+
+    </script>
+    <script type="text/javascript">
+        // Handle user authentication, listen to the authenticated event fired when the user logs in
+        lock.on("authenticated", function(authResult) {
+            lock.getProfile(authResult.idToken, function(error, profile) {
+
+                if (error) {
+                    // handle error
+                    return alert(error.message);
+                }
+
+                // If login is successful, we'll store the JWT in local storage
+                localStorage.setItem('token', JSON.stringify({token: authResult.idToken}));
+
+
+                var options = {
+                    id_token: authResult.idToken,
+                    api: 'aws',
+                    role: 'arn:aws:iam::656532927350:role/AdminFederated',
+                    principal: 'arn:aws:iam::656532927350:saml-provider/Mozilla-Auth0-Dev'
+                };
+
+
+
+                // We'll exchange our Auth0 JWT with AWS so that we can get our AWS credentials
+                // Once the token exchange is complete, we'll store the results in local storage
+                // if no errors occurred.
+                auth0.getDelegationToken(options, function(err,delegationResult){
+                    if (!err){
+                        // delegationResult.Credentials will contain our AWS Access Key, Secret Key and Session Token
+                        localStorage.setItem('credentials', JSON.stringify(delegationResult.Credentials))
+                    }
+                });
+                var credentials = JSON.parse(localStorage.getItem('credentials'));
+                document.getElementByID("aws-api-keys").innerHTML = "<pre>access_key : " + credentials.AccessKeyId + "\nsecret_key : " + credentials.SecretAccessKey + "\nsession_token : " + credentials.SessionToken + "\n</pre>";
+            });
+        });
+    </script>
+
+</head>
+<body class="container">
+ <div class="table">
+   <div class="cell">
+     <div class="content">
+       <!-- WIDGET -->
+       <div id="widget-container"></div>
+     </div>
+   </div>
+ </div>
+ <div id="aws-api-keys"></div>
+</body>
+</html>
