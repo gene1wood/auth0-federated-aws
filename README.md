@@ -153,8 +153,20 @@ A method that we've envisioned where
   and inserts the decrypted AWS STS credentials into the 
   ~/.aws/credentials filestore
 
+## Option 3 Setup
+
+* In the Auth0 management Dashboard go to "Clients"
+* Create a new client, distinct from the client setup for AWS Web Console access above, named "AWS API STS Key Fetcher Dev" for example
+* In the "Addons" tab flip the switch on the "Amazon Web Services" addon.
+
+
 # Sources
 * https://auth0.com/docs/integrations/aws
 * https://aws.amazon.com/blogs/security/how-to-implement-a-general-solution-for-federated-apicli-access-using-saml-2-0/
 * http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_saml_assertions.html
 * https://auth0.com/docs/protocols/saml/saml-configuration/saml-assertions
+* https://auth0.com/docs/integrations/aws#obtain-aws-tokens-to-securely-call-aws-apis-and-resources
+* https://auth0.com/docs/integrations/aws#get-the-aws-token-for-an-authenticated-user
+* https://auth0.com/docs/api-auth/tutorials/adoption/delegation#third-party-apis-firebase-aws-etc-
+* https://auth0.com/blog/building-serverless-apps-with-aws-lambda/
+* https://auth0.com/docs/client-auth/current/client-side-web
