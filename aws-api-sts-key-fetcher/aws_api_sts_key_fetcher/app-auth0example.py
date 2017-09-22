@@ -14,13 +14,13 @@ from flask import request
 from flask import send_from_directory
 from flask import session
 
-AUTH0_CLIENT_ID = 'g34TCGI95PfOHugnurKY15sW0tCGOfjW'
-AUTH0_CLIENT_SECRET = 'uhlF5fPGMvyr-0PEjdUBHXNW08oYVrYnsgsyNmxyVhWRsXIzaNliNvWJrKo_uOTK'
+AUTH0_CLIENT_ID = ''
+AUTH0_CLIENT_SECRET = ''
 AUTH0_CALLBACK_URL = 'http://localhost:3000/callback'
 AUTH0_DOMAIN = 'auth-dev.mozilla.auth0.com'
 CODE_KEY = 'code'
 PROFILE_KEY = 'profile'
-SECRET_KEY = '1cgtDJVwxLXhhWNCZbIz6DpcDZ03SOYC'
+SECRET_KEY = ''
 
 APP = Flask(__name__, static_url_path='')
 APP.secret_key = SECRET_KEY
