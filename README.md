@@ -102,6 +102,10 @@ From this point you should be able to log into AWS using federated login
   and IAM Role you'd like to assume
 * You should now be logged into the AWS Web Console
 
+## Diagram
+
+![Auth0 AWS Federated Access Diagram](https://github.com/gene1wood/auth0-federated-aws/blob/master/Auth0-AWS-Federated-Access.png)
+
 ## Setup Command Line Access
 
 This is a work in progress. There are three general approaches to this.
