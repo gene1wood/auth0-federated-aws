@@ -41,7 +41,7 @@ function (user, context, callback) {
       }
     }
     user.awsRole = awsRole;
-    user.awsRoleSession = user.given_username;
+    user.awsRoleSession = user.email;
     context.samlConfiguration.mappings = {
       "https://aws.amazon.com/SAML/Attributes/Role": "awsRole",
       "https://aws.amazon.com/SAML/Attributes/RoleSessionName": "awsRoleSession"
