@@ -1,0 +1,2 @@
+flask
+git+git://github.com/mozilla-iam/Flask-pyoidc.git

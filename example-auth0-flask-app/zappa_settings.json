@@ -1,0 +1,14 @@
+{
+  "dev": {
+    "app_function": "app.app",
+    "s3_bucket": "infosec-dev-zappa",
+    "keep_warm": false,
+    // "debug": true,
+    "domain": "example.security.allizom.org",
+    "lets_encrypt_key": "/path/to/letsencrypt-account.key",
+    "environment_variables": {
+      "CONFIG_URL": "s3://infosec-internal-data/second-opinion/dev/config.json",
+      "CONFIG_SIG_URL": "s3://infosec-internal-data/second-opinion/dev/config.asc",
+    }
+  }
+}
