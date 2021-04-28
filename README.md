@@ -1,6 +1,15 @@
-A collection of tools to enable Mozilla users federated access to AWS using Auth0
+# Deprecated
+
+This repo is deprecated in favor of the current evolution of these tools which can be found in
+
+* https://github.com/mozilla-iam/mozilla-aws-cli
+* https://github.com/mozilla-iam/federated-aws-rp
+* https://github.com/mozilla-iam/auth0-deploy/blob/master/rules/AWS-Federated-AMR.js
+* https://github.com/mozilla-iam/mozilla-aws-cli/blob/master/cloudformation/README.md
 
 # Contents
+
+A collection of tools to enable Mozilla users federated access to AWS using Auth0
 
 ## `auth0-rules/auth0-rule-aws-federated-group-role-mapping.js`
 
