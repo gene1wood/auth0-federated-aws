@@ -31,6 +31,15 @@ function (user, context, callback) {
     });
   };
   if (CLIENT_IDS.indexOf(context.clientID) >= 0) {
+    if (!user.email_verified) {
+      var reason = 'You primary email is not verified. Please contact EUS.';
+      context.redirect = {
+       url: "https://sso.mozilla.com/forbidden?reason="+encodeURIComponent(reason)
+      };
+      console.log('Primary email not verified');
+      return callback(null, user, context);
+    }
+
     for (var account in DATA.account_role_group_mapping) {
       for (var roleArn in DATA.account_role_group_mapping[account]) {
         if (user.hasOwnProperty("groups") && intersects(
@@ -42,6 +51,7 @@ function (user, context, callback) {
     }
     user.awsRole = awsRole;
     user.awsRoleSession = user.email;
+
     context.samlConfiguration.mappings = {
       "https://aws.amazon.com/SAML/Attributes/Role": "awsRole",
       "https://aws.amazon.com/SAML/Attributes/RoleSessionName": "awsRoleSession"
